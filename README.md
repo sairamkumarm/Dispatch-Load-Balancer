@@ -27,7 +27,7 @@ This project is implemented as a **monolith**, not a microservice, for the follo
 
 ## Core Features
 
-### Accept Delivery Orders
+### ✅ Accept Delivery Orders
 - POST `/api/dispatch/orders`
 - Accepts a list of orders with coordinates, address, weight, and priority
 
@@ -42,13 +42,16 @@ This project is implemented as a **monolith**, not a microservice, for the follo
   - Total load within vehicle capacity
   - Nearest vehicle selected using Haversine
 
-### ✨ Plan Metrics Summary *(Standout Feature)*
+---
+### Extras
+
+### ✨ Plan Metrics Summary 
 Response includes:
 - Total orders, assigned/unassigned count
 - Total + average travel distance
 - Great for audits and logistics insights
 
-### 🔁 Dispatch Strategy Interface *(Standout Feature)*
+### 🔁 Dispatch Strategy Interface 
 Built with strategy interface to allow:
 - Swappable algorithms (e.g. `Greedy`, `PriorityFirst`)
 - Easier testing, experimentation, and future enhancements
