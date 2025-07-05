@@ -5,11 +5,10 @@ Spring Boot application that optimizes the assignment of delivery orders to a fl
 ---
 
 ## Tech Stack
-- Java 17
-- Spring Boot 3.x
+- Java 21
+- Spring Boot 3.5.3
 - Maven
 - JUnit 5
-- MapStruct (Optional for DTO conversion)
 - Lombok
 
 ---
