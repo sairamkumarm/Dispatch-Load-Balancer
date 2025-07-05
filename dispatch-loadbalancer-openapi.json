@@ -1,0 +1,242 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Dispatch Load Balancer API",
+    "version": "1.0.1",
+    "description": "Optimizes allocation of delivery orders to vehicles based on priority, location, and capacity. Includes strategy-based planning and plan metrics."
+  },
+  "paths": {
+    "/api/dispatch/orders": {
+      "post": {
+        "summary": "Submit delivery orders",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderListRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Orders accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/dispatch/vehicles": {
+      "post": {
+        "summary": "Submit vehicle fleet data",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VehicleListRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Vehicles accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/dispatch/plan": {
+      "get": {
+        "summary": "Get optimized dispatch plan with strategy and metrics",
+        "responses": {
+          "200": {
+            "description": "Optimized dispatch plan",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DispatchPlanWithStatsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "OrderListRequest": {
+        "type": "object",
+        "properties": {
+          "orders": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Order"
+            }
+          }
+        }
+      },
+      "VehicleListRequest": {
+        "type": "object",
+        "properties": {
+          "vehicles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Vehicle"
+            }
+          }
+        }
+      },
+      "Order": {
+        "type": "object",
+        "required": [
+          "orderId",
+          "latitude",
+          "longitude",
+          "address",
+          "packageWeight",
+          "priority"
+        ],
+        "properties": {
+          "orderId": {
+            "type": "string"
+          },
+          "latitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "longitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "address": {
+            "type": "string"
+          },
+          "packageWeight": {
+            "type": "number"
+          },
+          "priority": {
+            "type": "string",
+            "enum": [
+              "HIGH",
+              "MEDIUM",
+              "LOW"
+            ]
+          }
+        }
+      },
+      "Vehicle": {
+        "type": "object",
+        "required": [
+          "vehicleId",
+          "capacity",
+          "currentLatitude",
+          "currentLongitude",
+          "currentAddress"
+        ],
+        "properties": {
+          "vehicleId": {
+            "type": "string"
+          },
+          "capacity": {
+            "type": "integer"
+          },
+          "currentLatitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "currentLongitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "currentAddress": {
+            "type": "string"
+          }
+        }
+      },
+      "SuccessResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "success"
+            ]
+          }
+        }
+      },
+      "DispatchPlanWithStatsResponse": {
+        "type": "object",
+        "properties": {
+          "planStats": {
+            "$ref": "#/components/schemas/DispatchPlanStats"
+          },
+          "dispatchPlan": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DispatchPlanEntry"
+            }
+          }
+        }
+      },
+      "DispatchPlanStats": {
+        "type": "object",
+        "properties": {
+          "totalOrders": {
+            "type": "integer"
+          },
+          "assignedOrders": {
+            "type": "integer"
+          },
+          "unassignedOrders": {
+            "type": "integer"
+          },
+          "averageDistance": {
+            "type": "string"
+          },
+          "totalDistance": {
+            "type": "string"
+          }
+        }
+      },
+      "DispatchPlanEntry": {
+        "type": "object",
+        "properties": {
+          "vehicleId": {
+            "type": "string"
+          },
+          "totalLoad": {
+            "type": "integer"
+          },
+          "totalDistance": {
+            "type": "string"
+          },
+          "assignedOrders": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Order"
+            }
+          }
+        }
+      }
+    }
+  }
+}
