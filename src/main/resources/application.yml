@@ -1,0 +1,3 @@
+spring.application.name: dispatch-load-balancer
+server:
+  port: 8080
