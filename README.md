@@ -46,7 +46,7 @@ This project is implemented as a **monolith**, not a microservice, for the follo
 
 ### ✨ Plan Metrics Summary 
 Response includes:
-- Total orders, assigned/unassigned count
+- Total orders, unassigned orders list
 - Total + average travel distance
 - Great for audits and logistics insights
 
@@ -54,7 +54,7 @@ Response includes:
 Built with strategy interface to allow:
 - Swappable algorithms (e.g. `Greedy`, `PriorityFirst`)
 - Easier testing, experimentation, and future enhancements
-
+- Includes a resultBuilder for easy summary building
 ---
 
 ## 📐 Data Models
@@ -85,14 +85,9 @@ Built with strategy interface to allow:
 ### Dispatch Plan Response
 ```json
 {
-  "planStats": {
-    "totalOrders": 30,
-    "assignedOrders": 28,
-    "unassignedOrders": 2,
-    "averageDistance": "5.6 km",
-    "totalDistance": "140.3 km"
-  },
-  "dispatchPlan": [
+  "message": "Plan created",
+  "status": "Success",
+  "data": [
     {
       "vehicleId": "VEH001",
       "totalLoad": 25,
@@ -103,13 +98,57 @@ Built with strategy interface to allow:
   ]
 }
 ```
-
+### Dispatch Plan Response with summary
+```json
+{
+  "message": "Full Plan created",
+  "status": "Success",
+  "data": {
+    "totalOrders": 22,
+    "averageDistance": "16 km",
+    "totalDistance": "83 km",
+    "totalLoad": 490,
+    "dispatchPlan": [
+      {
+        "vehicleId": "VEH005",
+        "totalLoad": 110,
+        "totalDistance": "14 km",
+        "assignedOrders": [
+          {
+            "orderId": "ORD026",
+            "latitude": 28.7041,
+            "longitude": 77.1025,
+            "address": "Karol Bagh, Delhi, India",
+            "packageWeight": 25,
+            "priority": "HIGH"
+          },
+          ...
+        ]
+      }
+    ],
+    "unassignedOrders": [
+      {
+        "orderId": "ORD010",
+        "latitude": 28.6139,
+        "longitude": 77.209,
+        "address": "Connaught Place, Delhi, India",
+        "packageWeight": 30,
+        "priority": "LOW"
+      },
+      ...
+    ]
+  }
+}
+```
 ---
 
 ## Prioritization Logic
 - Orders sorted by priority: `HIGH > MEDIUM > LOW`
-- Then by vehicle proximity (Haversine)
-- Order is only assigned if it fits into the remaining capacity
+- Then within the priority, orders are sorted on weight, to prevent fragmentation
+- Vehicle is only considered if order(n) fits into the remaining capacity
+- Vehicle closest to order(n) claims the delivery
+- If an order is too big to fit in the remaining capacity of any vehicle then it stays unassigned
+- This logic is greedy and aims to find the local minima, while compromising on finding an elusive global minima
 
 ---
 

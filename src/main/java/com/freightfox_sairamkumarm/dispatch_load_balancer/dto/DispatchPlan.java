@@ -20,5 +20,7 @@ public class DispatchPlan {
         this.totalDistance = totalDistance.intValue() + " km";
     }
 
-    public DispatchPlan(){}
+    public DispatchPlan(){
+        this.totalDistance = "0 km";
+    }
 }

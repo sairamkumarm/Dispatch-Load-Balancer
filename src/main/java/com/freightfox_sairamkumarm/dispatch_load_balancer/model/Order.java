@@ -1,8 +1,10 @@
 package com.freightfox_sairamkumarm.dispatch_load_balancer.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
 public class Order {
 
     public enum OrderPriority {
