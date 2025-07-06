@@ -289,7 +289,10 @@ Import into:
 
 ---
 
-## Author
-Sairam 
+#### Thank you for your time.
+——<br>
+With sincere regard,<br>
+Sairamkumar M<br>
+[GitHub](https://github.com/sairamkumarm) | [LinkedIn](https://www.linkedin.com/in/sairamkumarm/)
 
 ---
