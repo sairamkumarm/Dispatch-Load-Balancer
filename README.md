@@ -206,10 +206,73 @@ Test coverage includes:
 
 ---
 
+Here's the completed documentation snippet and a refined breakdown that you can include in your README or API docs:
+
+---
+
 ## Error Handling
-- Invalid/missing fields → `400 Bad Request`
-- Empty orders/vehicles → returns empty plan
-- Overcapacity → order skipped, not failed
+
+The application uses a **global exception handler** to provide clean, consistent error responses for all incoming API requests. This ensures a better developer experience and helps clients debug issues quickly.
+
+### What’s Handled:
+
+* **Invalid/Missing Fields** → `400 Bad Request`
+
+  * Triggered when DTO validation fails (e.g., missing required fields, out-of-range values)
+  * Returns a map of field-specific errors for easy debugging
+* **Invalid Enums or Malformed JSON** → `400 Bad Request`
+
+  * Triggered when the request body contains a badly formatted enum or JSON payload
+  * Provides a clear hint that enum or syntax is incorrect
+* **Empty Orders/Vehicles** → `200 OK` with Empty Dispatch Plan
+
+  * No errors are thrown
+  * Simply results in a no-op dispatch response with zero assignments
+* **Overcapacity Situations** → `200 OK` with Unassigned Orders
+
+  * Orders that cannot be assigned due to vehicle capacity constraints are silently skipped
+  * Included in the `unassignedOrders` field of the dispatch response
+* **Unhandled Server Errors** → `500 Internal Server Error`
+
+  * Any uncaught exception is caught and wrapped in a generic error response
+  * Prevents leaking stack traces or app internals
+
+---
+
+### 🧪 Example Error Responses
+
+**Validation Failure**
+
+```json
+{
+  "message": "Invalid input",
+  "status": "failed",
+  "data": {
+    "vehicleId": "must not be blank",
+    "capacity": "must be greater than or equal to 1"
+  }
+}
+```
+
+**Malformed JSON / Invalid Enum**
+
+```json
+{
+  "message": "error",
+  "status": "Invalid input: check enums or malformed JSON.",
+  "data": null
+}
+```
+
+**Unhandled Exception**
+
+```json
+{
+  "message": "error",
+  "status": "Unexpected error occurred",
+  "data": null
+}
+```
 
 ---
 
