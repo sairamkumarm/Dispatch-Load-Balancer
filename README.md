@@ -206,10 +206,6 @@ Test coverage includes:
 
 ---
 
-Here's the completed documentation snippet and a refined breakdown that you can include in your README or API docs:
-
----
-
 ## Error Handling
 
 The application uses a **global exception handler** to provide clean, consistent error responses for all incoming API requests. This ensures a better developer experience and helps clients debug issues quickly.
