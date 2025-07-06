@@ -224,7 +224,6 @@ Import into:
 ---
 
 ## Future Improvements
-- Export plan as CSV
 - Persist orders/vehicles in DB (H2 or Postgres)
 - Add pagination and plan caching
 - Implement zone-based strategy

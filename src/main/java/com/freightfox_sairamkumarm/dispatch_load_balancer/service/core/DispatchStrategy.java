@@ -8,7 +8,7 @@ import com.freightfox_sairamkumarm.dispatch_load_balancer.model.Vehicle;
 import java.util.List;
 
 public interface DispatchStrategy {
-    public DispatchResult generateDispatchPlans(List<Order> orders, List<Vehicle> vehicles);
+    DispatchResult generateDispatchPlans(List<Order> orders, List<Vehicle> vehicles);
 
     default DispatchResult buildResult(List<DispatchPlan> plans, List<Order> unassigned) {
         DispatchResult result = new DispatchResult();

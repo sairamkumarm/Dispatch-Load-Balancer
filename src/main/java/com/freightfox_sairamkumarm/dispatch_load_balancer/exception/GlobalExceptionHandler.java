@@ -33,7 +33,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ResponseDTO<String>> handleUnknownErrors(Exception ex) {
-        ex.printStackTrace();
+//        ex.printStackTrace();
         ResponseDTO<String> response = new ResponseDTO<>(
                 "error", "Unexpected error occurred", null);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);

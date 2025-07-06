@@ -8,7 +8,6 @@ import com.freightfox_sairamkumarm.dispatch_load_balancer.service.core.DispatchS
 import org.springframework.stereotype.Component;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Component("greedy")
 public class GreedyDispatch implements DispatchStrategy {

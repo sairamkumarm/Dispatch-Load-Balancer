@@ -1,100 +1,181 @@
 {
-  "openapi": "3.0.3",
+  "openapi": "3.1.0",
   "info": {
-    "title": "Dispatch Load Balancer API",
-    "version": "1.0.1",
-    "description": "Optimizes allocation of delivery orders to vehicles based on priority, location, and capacity. Includes strategy-based planning and plan metrics."
+    "title": "OpenAPI definition",
+    "version": "v0",
+    "description": "Spring Boot backend service that optimally assigns delivery orders to vehicles.\nSupports Haversine distance calculations, priority-based order handling (HIGH > MEDIUM > LOW), and vehicle capacity constraints."
   },
+  "servers": [
+    {
+      "url": "http://localhost:8080",
+      "description": "Generated server url"
+    }
+  ],
   "paths": {
-    "/api/dispatch/orders": {
-      "post": {
-        "summary": "Submit delivery orders",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/OrderListRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Orders accepted",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/SuccessResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/dispatch/vehicles": {
       "post": {
-        "summary": "Submit vehicle fleet data",
+        "tags": [
+          "dispatch-controller"
+        ],
+        "operationId": "takeVehicles",
         "requestBody": {
-          "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/VehicleListRequest"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "200": {
-            "description": "Vehicles accepted",
+            "description": "OK",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/SuccessResponse"
+                  "$ref": "#/components/schemas/ResponseDTOListVehicle"
                 }
               }
             }
           }
-        }
+        },
+        "description": "Accepts and stores a list of delivery vehicles. Vehicles include live location and capacity data used in dispatch planning."
+      }
+    },
+    "/api/dispatch/orders": {
+      "post": {
+        "tags": [
+          "dispatch-controller"
+        ],
+        "operationId": "takeOrders",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderListRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseDTOListOrder"
+                }
+              }
+            }
+          }
+        },
+        "description": "Accepts and stores a list of delivery orders including coordinates, weight, and priority."
       }
     },
     "/api/dispatch/plan": {
       "get": {
-        "summary": "Get optimized dispatch plan with strategy and metrics",
+        "tags": [
+          "dispatch-controller"
+        ],
+        "operationId": "getPlans",
         "responses": {
           "200": {
-            "description": "Optimized dispatch plan",
+            "description": "OK",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/DispatchPlanWithStatsResponse"
+                  "$ref": "#/components/schemas/ResponseDTOListDispatchPlan"
                 }
               }
             }
           }
-        }
+        },
+        "description": "Returns an optimized dispatch plan per vehicle based on the greedy distance + priority algorithm."
+      }
+    },
+    "/api/dispatch/fullPlan": {
+      "get": {
+        "tags": [
+          "dispatch-controller"
+        ],
+        "operationId": "getFullPlans",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseDTODispatchResult"
+                }
+              }
+            }
+          }
+        },
+        "description": "Returns a complete dispatch summary with all plan metrics and a list of unassignable orders."
       }
     }
   },
   "components": {
     "schemas": {
-      "OrderListRequest": {
-        "type": "object",
-        "properties": {
-          "orders": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Order"
-            }
-          }
-        }
-      },
       "VehicleListRequest": {
         "type": "object",
         "properties": {
           "vehicles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VehicleRequest"
+            },
+            "minItems": 1
+          }
+        },
+        "required": [
+          "vehicles"
+        ]
+      },
+      "VehicleRequest": {
+        "type": "object",
+        "properties": {
+          "vehicleId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "capacity": {
+            "type": "number",
+            "format": "double",
+            "minimum": 1
+          },
+          "currentLatitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "currentLongitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "currentAddress": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "currentAddress",
+          "currentLatitude",
+          "currentLongitude",
+          "vehicleId"
+        ]
+      },
+      "ResponseDTOListVehicle": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "data": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/Vehicle"
@@ -102,16 +183,92 @@
           }
         }
       },
-      "Order": {
+      "Vehicle": {
         "type": "object",
+        "properties": {
+          "vehicleId": {
+            "type": "string"
+          },
+          "capacity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "currentLatitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "currentLongitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "currentAddress": {
+            "type": "string"
+          }
+        },
+        "description": "Represents a delivery vehicle and its live position."
+      },
+      "OrderListRequest": {
+        "type": "object",
+        "properties": {
+          "orders": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderRequest"
+            },
+            "minItems": 1
+          }
+        },
         "required": [
-          "orderId",
+          "orders"
+        ]
+      },
+      "OrderRequest": {
+        "type": "object",
+        "properties": {
+          "orderId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "latitude": {
+            "type": "number",
+            "format": "double",
+            "maximum": 90,
+            "minimum": -90
+          },
+          "longitude": {
+            "type": "number",
+            "format": "double",
+            "maximum": 180,
+            "minimum": -180
+          },
+          "address": {
+            "type": "string",
+            "minLength": 1
+          },
+          "packageWeight": {
+            "type": "number",
+            "format": "double",
+            "minimum": 1
+          },
+          "priority": {
+            "type": "string",
+            "enum": [
+              "HIGH",
+              "MEDIUM",
+              "LOW"
+            ]
+          }
+        },
+        "required": [
+          "address",
           "latitude",
           "longitude",
-          "address",
-          "packageWeight",
+          "orderId",
           "priority"
-        ],
+        ]
+      },
+      "Order": {
+        "type": "object",
         "properties": {
           "orderId": {
             "type": "string"
@@ -128,7 +285,8 @@
             "type": "string"
           },
           "packageWeight": {
-            "type": "number"
+            "type": "integer",
+            "format": "int32"
           },
           "priority": {
             "type": "string",
@@ -138,93 +296,35 @@
               "LOW"
             ]
           }
-        }
+        },
+        "description": "Represents a delivery order with geolocation and priority."
       },
-      "Vehicle": {
-        "type": "object",
-        "required": [
-          "vehicleId",
-          "capacity",
-          "currentLatitude",
-          "currentLongitude",
-          "currentAddress"
-        ],
-        "properties": {
-          "vehicleId": {
-            "type": "string"
-          },
-          "capacity": {
-            "type": "integer"
-          },
-          "currentLatitude": {
-            "type": "number",
-            "format": "double"
-          },
-          "currentLongitude": {
-            "type": "number",
-            "format": "double"
-          },
-          "currentAddress": {
-            "type": "string"
-          }
-        }
-      },
-      "SuccessResponse": {
+      "ResponseDTOListOrder": {
         "type": "object",
         "properties": {
           "message": {
             "type": "string"
           },
           "status": {
-            "type": "string",
-            "enum": [
-              "success"
-            ]
-          }
-        }
-      },
-      "DispatchPlanWithStatsResponse": {
-        "type": "object",
-        "properties": {
-          "planStats": {
-            "$ref": "#/components/schemas/DispatchPlanStats"
+            "type": "string"
           },
-          "dispatchPlan": {
+          "data": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/DispatchPlanEntry"
+              "$ref": "#/components/schemas/Order"
             }
           }
         }
       },
-      "DispatchPlanStats": {
-        "type": "object",
-        "properties": {
-          "totalOrders": {
-            "type": "integer"
-          },
-          "assignedOrders": {
-            "type": "integer"
-          },
-          "unassignedOrders": {
-            "type": "integer"
-          },
-          "averageDistance": {
-            "type": "string"
-          },
-          "totalDistance": {
-            "type": "string"
-          }
-        }
-      },
-      "DispatchPlanEntry": {
+      "DispatchPlan": {
         "type": "object",
         "properties": {
           "vehicleId": {
             "type": "string"
           },
           "totalLoad": {
-            "type": "integer"
+            "type": "integer",
+            "format": "int32"
           },
           "totalDistance": {
             "type": "string"
@@ -234,6 +334,71 @@
             "items": {
               "$ref": "#/components/schemas/Order"
             }
+          }
+        },
+        "description": "Plan assigned to a single vehicle, including all orders, total load, and distance travelled."
+      },
+      "ResponseDTOListDispatchPlan": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DispatchPlan"
+            }
+          }
+        }
+      },
+      "DispatchResult": {
+        "type": "object",
+        "properties": {
+          "totalOrders": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "averageDistance": {
+            "type": "string"
+          },
+          "totalDistance": {
+            "type": "string"
+          },
+          "totalLoad": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "dispatchPlan": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DispatchPlan"
+            }
+          },
+          "unassignedOrders": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Order"
+            }
+          }
+        },
+        "description": "Aggregated result of dispatching process: includes metrics like total orders, load, average and total distance, vehicle plans, and unassigned orders."
+
+      },
+      "ResponseDTODispatchResult": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/DispatchResult"
           }
         }
       }

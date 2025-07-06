@@ -1,6 +1,5 @@
 package com.freightfox_sairamkumarm.dispatch_load_balancer.service.core;
 
-import com.freightfox_sairamkumarm.dispatch_load_balancer.dto.DispatchPlan;
 import com.freightfox_sairamkumarm.dispatch_load_balancer.dto.DispatchResult;
 import com.freightfox_sairamkumarm.dispatch_load_balancer.model.Order;
 import com.freightfox_sairamkumarm.dispatch_load_balancer.model.Vehicle;

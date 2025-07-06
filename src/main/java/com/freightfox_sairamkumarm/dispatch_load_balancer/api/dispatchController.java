@@ -1,6 +1,8 @@
 package com.freightfox_sairamkumarm.dispatch_load_balancer.api;
 
 import com.freightfox_sairamkumarm.dispatch_load_balancer.dto.*;
+import com.freightfox_sairamkumarm.dispatch_load_balancer.model.Order;
+import com.freightfox_sairamkumarm.dispatch_load_balancer.model.Vehicle;
 import com.freightfox_sairamkumarm.dispatch_load_balancer.service.core.DispatchService;
 import com.freightfox_sairamkumarm.dispatch_load_balancer.service.core.PlanService;
 import com.freightfox_sairamkumarm.dispatch_load_balancer.service.core.VehicleService;
@@ -30,13 +32,13 @@ public class dispatchController {
 
 
     @PostMapping("/orders")
-    public ResponseEntity<ResponseDTO> takeOrders(@Valid @RequestBody OrderListRequest orderListRequest){
+    public ResponseEntity<ResponseDTO<List<Order>>> takeOrders(@Valid @RequestBody OrderListRequest orderListRequest){
         dispatchService.takeOrders(orderListRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDTO<>("Delivery orders accepted", "success",dataStore.getAllOrders()));
     }
 
     @PostMapping("/vehicles")
-    public ResponseEntity<ResponseDTO> takeVehicles(@Valid @RequestBody VehicleListRequest vehicleListRequest){
+    public ResponseEntity<ResponseDTO<List<Vehicle>>> takeVehicles(@Valid @RequestBody VehicleListRequest vehicleListRequest){
         vehicleService.addVehicles(vehicleListRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDTO<>("Delivery vehicles accepted", "success",dataStore.getAllVehicles()));
     }
