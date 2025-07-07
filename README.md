@@ -29,10 +29,11 @@ This project is implemented as a **monolith**, not a microservice, for the follo
 ### ✅ Accept Delivery Orders
 - POST `/api/dispatch/orders`
 - Accepts a list of orders with coordinates, address, weight, and priority
-
+- NOTE: Current input persistance is limited to an in-memory store with only single session persistence, in light of the limited scope
 ### ✅ Accept Vehicle Details
 - POST `/api/dispatch/vehicles`
 - Accepts a list of vehicles with location and capacity
+- NOTE: Current input persistance is limited to an in-memory store with only single session persistence, in light of the limited scope
 
 ### ✅ Generate Dispatch Plan
 - GET `/api/dispatch/plan`
