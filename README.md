@@ -170,8 +170,7 @@ com.dispatch
 │   └── store         // In-memory store service
 ├── util              // Haversine + Mapper utils
 ├── config            // Enum, strategy registry (future proof)
-├── exception         // Custom exceptions + handler
-└── test              // Unit + integration tests
+└── exception         // Custom exceptions + handler
 ```
 
 ---
