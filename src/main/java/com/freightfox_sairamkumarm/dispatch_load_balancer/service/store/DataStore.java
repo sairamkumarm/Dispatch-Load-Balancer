@@ -19,6 +19,7 @@ public class DataStore {
     }
 
     public void saveAllOrders(List<Order> orders){
+        orderStore.clear();
         orders.forEach(o -> orderStore.put(o.getOrderId(),o));
     }
 
@@ -26,6 +27,7 @@ public class DataStore {
         vehicleStore.put(v.getVehicleId(), v);
     }
     public void saveAllVehicles(List<Vehicle> vehicles) {
+        vehicleStore.clear();
         vehicles.forEach(v -> vehicleStore.put(v.getVehicleId(), v));
     }
 
