@@ -220,9 +220,9 @@ The application uses a **global exception handler** to provide clean, consistent
 
   * Triggered when the request body contains a badly formatted enum or JSON payload
   * Provides a clear hint that enum or syntax is incorrect
-* **Empty Orders/Vehicles** → `200 OK` with Empty Dispatch Plan
+* **Empty Orders/Vehicles** → `400 Bad Request` with Empty Dispatch Plan
 
-  * No errors are thrown
+  * No errors are thrown in Plan results, but input endpoint will throw 400s for empty orders or vehicles
   * Simply results in a no-op dispatch response with zero assignments
 * **Overcapacity Situations** → `200 OK` with Unassigned Orders
 
