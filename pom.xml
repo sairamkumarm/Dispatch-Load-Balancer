@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.freightfox-sairamkumarm</groupId>
 	<artifactId>dispatch-load-balancer</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>dispatch-load-balancer</name>
 	<description>Spring Boot application that optimizes the assignment of delivery orders to a fleet of vehicles based on location, vehicle capacity, and delivery priority. Orders are assigned to minimize total travel distance using the Haversine formula.</description>
 	<url/>
@@ -18,7 +18,10 @@
 		<license/>
 	</licenses>
 	<developers>
-		<developer/>
+		<developer>
+			<name>Sairamkumar M</name>
+			<email>sairamkumar.m@outlook.com</email>
+		</developer>
 	</developers>
 	<scm>
 		<connection/>
