@@ -22,6 +22,8 @@ public class GreedyDispatch implements DispatchStrategy {
         PriorityQueue<Order> orderQueue = new PriorityQueue<>(comparator);
         orderQueue.addAll(orders);
 
+        vehicles.sort(Comparator.comparingInt(Vehicle::getCapacity).reversed());
+
         Map<String, DispatchPlan> planMap = new HashMap<>();
         Map<String, Integer> remainingCap = new HashMap<>();
         Map<String, double[]> vehicleLoc = new HashMap<>();
